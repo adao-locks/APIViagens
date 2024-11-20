@@ -1,0 +1,46 @@
+package com.agenciaviagens.controller;
+
+import com.agenciaviagens.model.Destino;
+import com.agenciaviagens.service.DestinoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/destinos")
+public class DestinoController {
+    @Autowired
+    private DestinoService destinoService;
+
+    @PostMapping
+    public Destino cadastrarDestino(@RequestBody Destino destino) {
+        return destinoService.cadastrarDestino(destino);
+    }
+
+    @GetMapping
+    public List<Destino> listarDestinos() {
+        return destinoService.listarDestinos();
+    }
+
+    @GetMapping("/pesquisar")
+    public List<Destino> pesquisarDestinos(@RequestParam(required = false) String nome,
+                                           @RequestParam(required = false) String localizacao) {
+        return destinoService.pesquisarDestinos(nome, localizacao);
+    }
+
+    @GetMapping("/{id}")
+    public Destino visualizarDetalhes(@PathVariable Long id) {
+        return destinoService.buscarPorId(id).orElseThrow(() -> new RuntimeException("Destino não encontrado"));
+    }
+
+    @PostMapping("/{id}/avaliar")
+    public Destino avaliarDestino(@PathVariable Long id, @RequestParam int nota) {
+        return destinoService.avaliarDestino(id, nota);
+    }
+
+    @DeleteMapping("/{id}")
+    public void excluirDestino(@PathVariable Long id) {
+        destinoService.excluirDestino(id);
+    }
+}
